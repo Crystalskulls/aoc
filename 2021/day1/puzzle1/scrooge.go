@@ -1,0 +1,1 @@
+package main;import("encoding/csv";"os";"strconv");func main(){f,_:=os.Open("input.csv");r:=csv.NewReader(f);d,_:=r.ReadAll();z:=0;for i:=0;i<len(d)-1;i++{n,_:=strconv.Atoi(d[i][0]);m,_:=strconv.Atoi(d[i+1][0]);if m>n {z++}};print(z)}
