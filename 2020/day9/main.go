@@ -5,12 +5,46 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
 
 func main() {
 	numbers := readCSV("input.csv")
-	fmt.Println(findFirstInvalidNumber(numbers))
+	invalidNumber := findFirstInvalidNumber(numbers)
+	fmt.Println(invalidNumber)
+	fmt.Println(findContiguousSet(numbers, invalidNumber))
+}
+
+func findContiguousSet(numbers []int, invalidNumber int) (encryptionWeakness int) {
+	set := make([]int, 0)
+	startIndex := 0
+	for {
+		for i := startIndex; i < len(numbers); i++ {
+			set = append(set, numbers[i])
+			s := sum(set)
+			if s == invalidNumber && len(set) > 1 {
+				return calcWeakness(set)
+			}
+			if s > invalidNumber {
+				startIndex++
+				set = make([]int, 0)
+				break
+			}
+		}
+	}
+}
+
+func sum(numbers []int) (sum int) {
+	for _, number := range numbers {
+		sum += number
+	}
+	return
+}
+
+func calcWeakness(numbers []int) (encryptionWeakness int) {
+	sort.Ints(numbers)
+	return numbers[0] + numbers[len(numbers)-1]
 }
 
 func findFirstInvalidNumber(numbers []int) (invalidNumber int) {
