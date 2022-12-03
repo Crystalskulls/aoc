@@ -10,14 +10,10 @@ func main() {
 	data, _ := os.ReadFile("input.txt")
 	backpacks := strings.Split(string(data), "\n")
 	sum, sum2 := 0, 0
-	g := make([]string, 3)
 	for i, b := range backpacks {
-		compartments := []string{b[0 : len(b)/2], b[len(b)/2:]}
-		sum += compare(compartments)
-		g[i%3] = b
+		sum += compare([]string{b[0 : len(b)/2], b[len(b)/2:]})
 		if (i+1)%3 == 0 {
-			sum2 += compare(g)
-			g = make([]string, 3)
+			sum2 += compare(backpacks[i-2 : i+1])
 		}
 	}
 	fmt.Printf("Part 1: %d - Part2: %d\n", sum, sum2)
