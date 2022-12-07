@@ -8,6 +8,14 @@ import (
 	"strings"
 )
 
+type Handheld struct {
+	filesystem *Filesystem
+}
+
+type Filesystem struct {
+	root *Dir
+}
+
 type Dir struct {
 	name      string
 	path      string
@@ -23,42 +31,15 @@ type File struct {
 }
 
 func main() {
+	handheld := new(Handheld)
+	handheld.filesystem = new(Filesystem)
+	handheld.createFilesystem()
+}
+
+func (handheld *Handheld) createFilesystem() {
 	file, _ := os.ReadFile("input.txt")
 	commands := strings.Split(string(file), "\n")
-	root, dirMap := parseDirectoryTree(commands)
-	calcDirSize(root)
-	partOne := 0
-	for _, dir := range dirMap {
-		if dir.size <= 100000 {
-			partOne += dir.size
-		}
-
-	}
-	fmt.Println(partOne)
-	space := 30000000 - (70000000 - root.size)
-	pd := make([]int, 0)
-	for _, dir := range dirMap {
-		if dir.size > space {
-			pd = append(pd, dir.size)
-		}
-	}
-	sort.Ints(pd)
-	fmt.Println(pd[0])
-}
-
-func calcDirSize(dir *Dir) int {
-	if len(dir.subDirs) == 0 {
-		return dir.size
-	}
-	for _, subdir := range dir.subDirs {
-		dir.size += calcDirSize(subdir)
-	}
-	return dir.size
-}
-
-func parseDirectoryTree(commands []string) (root *Dir, dirMap map[string]*Dir) {
-	root = new(Dir)
-	dirMap = make(map[string]*Dir, 0)
+	dirMap := make(map[string]*Dir, 0)
 	var currentDir *Dir
 	currentPath := ""
 	for _, command := range commands {
@@ -69,7 +50,7 @@ func parseDirectoryTree(commands []string) (root *Dir, dirMap map[string]*Dir) {
 				dir := createDir(cs[2], currentPath, nil)
 				dirMap[dir.path] = dir
 				currentDir = dir
-				root = dir
+				handheld.filesystem.root = dir
 			} else if cs[1] == "cd" && cs[2] == ".." {
 				i := strings.LastIndex(currentPath[:len(currentPath)-1], "/")
 				currentPath = currentPath[:i+1]
@@ -88,9 +69,36 @@ func parseDirectoryTree(commands []string) (root *Dir, dirMap map[string]*Dir) {
 				currentDir.size += file.size
 			}
 		}
-
 	}
-	return
+
+	calcDirSize(handheld.filesystem.root)
+	partOne := 0
+	for _, dir := range dirMap {
+		if dir.size <= 100000 {
+			partOne += dir.size
+		}
+	}
+
+	space := 30000000 - (70000000 - handheld.filesystem.root.size)
+	dirs := make([]int, 0)
+	for _, dir := range dirMap {
+		if dir.size > space {
+			dirs = append(dirs, dir.size)
+		}
+	}
+	sort.Ints(dirs)
+	partTwo := dirs[0]
+	fmt.Printf("Part One: %d - Part Two: %d\n", partOne, partTwo)
+}
+
+func calcDirSize(dir *Dir) int {
+	if len(dir.subDirs) == 0 {
+		return dir.size
+	}
+	for _, subdir := range dir.subDirs {
+		dir.size += calcDirSize(subdir)
+	}
+	return dir.size
 }
 
 func createDir(name string, path string, parent *Dir) *Dir {
