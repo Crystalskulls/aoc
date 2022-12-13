@@ -7,10 +7,6 @@ import (
 	"strings"
 )
 
-type Result struct {
-	rightOrder *bool
-}
-
 func main() {
 	fmt.Printf("PartOne: %d\n", findRightOrderedPairs())
 	fmt.Printf("PartTwo: %d\n", findDecoderKey())
