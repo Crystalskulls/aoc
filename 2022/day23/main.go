@@ -39,7 +39,6 @@ func plantSeedlings(grove [][]*Elf) {
 		if i == 10 {
 			fmt.Println("PartOne:", countEmptyGroundTiles(grove))
 		}
-		//fmt.Println("mc:", mc)
 		if mc == 0 {
 			fmt.Println("PartTwo:", i)
 			break
@@ -283,22 +282,4 @@ func (elf *Elf) setAdjecentElves(grove [][]*Elf) {
 		}
 	}
 	elf.adjacentElves = adjecentElves
-}
-
-func printGrove(grove [][]*Elf) {
-	for _, row := range grove {
-		for _, elf := range row {
-			if elf == nil {
-				fmt.Print(".")
-				continue
-			}
-			fmt.Print("#")
-		}
-		fmt.Println()
-	}
-	fmt.Println()
-}
-
-func (elf *Elf) String() string {
-	return fmt.Sprintf("x: %d y: %d px: %d py: %d\n", elf.x, elf.y, elf.proposeX, elf.proposeY)
 }
