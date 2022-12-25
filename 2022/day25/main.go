@@ -54,8 +54,7 @@ func convertToSNAFU(decimal int) (snafuNumber string) {
 			snafu[len(snafu)-1] = snafuMap[5-(currentValue)]
 			mind = "1"
 		} else {
-			//currentValue += remainder
-			if currentValue > 2 {
+´			if currentValue > 2 {
 				snafu[len(snafu)-1] = snafuMap[5-(currentValue)]
 				mind = "1"
 			} else {
